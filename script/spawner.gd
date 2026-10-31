@@ -5,7 +5,7 @@ const OBSTACLE = preload("uid://mtkiq18r1rew")
 var active: bool = true
 
 func _ready() -> void:
-	EventBus.game_finished.connect(func(a, b): active = false)
+	EventBus.game_finished.connect(func(a): active = false)
 
 func _on_timer_timeout():
 	if active == false:

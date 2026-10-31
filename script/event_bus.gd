@@ -1,7 +1,7 @@
 extends Node
 
 signal scored
-signal game_finished(score: int, max_score: int)
+signal game_finished(score: int)
 
 # Sinais de áudio
 signal audio_player_jumped

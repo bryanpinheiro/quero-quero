@@ -10,22 +10,24 @@ config_version=5
 
 [application]
 
-config/name="Flappy Bird Clone"
+config/name="Quero-Quero"
 run/main_scene="uid://d2c18gsb3drbl"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/image="uid://eppog0jaubf7"
+config/icon="uid://cwns1dmvt7gst"
+config/windows_native_icon="res://asset/bird-bw2.ico"
 
 [autoload]
 
 EventBus="*uid://cnxvww4mkrdf4"
 SoundManager="*uid://0ne5v80l5704"
+GameManager="*uid://c6po2628qxwmv"
 
 [display]
 
 window/size/viewport_width=384
 window/size/viewport_height=216
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
 window/stretch/scale_mode="integer"
 
 [input]

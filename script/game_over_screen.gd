@@ -17,8 +17,10 @@ func _on_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://scene/main_menu.tscn")
 	
 	
-func _on_game_finished(score: int, max_score: int) -> void:
+func _on_game_finished(score: int) -> void:
 	EventBus.stop_main_music.emit()
+	await get_tree().physics_frame
+	var max_score: int = GameManager.game_data.max_score
 	stats.text = str("Pontuação: ", score, "\nRecorde: ", max_score)
 	show()
 

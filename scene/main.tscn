@@ -6,6 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="4_0ha60"]
 [ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_p1hux"]
 [ext_resource type="Texture2D" uid="uid://ctj0jxex5rk66" path="res://asset/background-spritesheet.png" id="6_4j5ol"]
+[ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/main.gdshader" id="7_p1hux"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bwkyw"]
+shader = ExtResource("7_p1hux")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ajdik"]
 
 [sub_resource type="Animation" id="Animation_4j5ol"]
 length = 0.001
@@ -79,6 +85,16 @@ fit_content = true
 autowrap_mode = 0
 
 [node name="GameOverScreen" parent="HUD" unique_id=1408744853 instance=ExtResource("4_0ha60")]
+
+[node name="TextureRect" type="TextureRect" parent="HUD" unique_id=467638894]
+material = SubResource("ShaderMaterial_bwkyw")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("PlaceholderTexture2D_ajdik")
 
 [node name="BackgroundPlayer" type="AnimationPlayer" parent="." unique_id=1714575528]
 unique_name_in_owner = true

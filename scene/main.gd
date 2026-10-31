@@ -19,4 +19,4 @@ func _on_scored() -> void:
 
 func _on_player_died() -> void:
 	background_player.pause()
-	EventBus.game_finished.emit(score, -1)
+	EventBus.game_finished.emit(score)
