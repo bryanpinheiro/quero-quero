@@ -7,14 +7,15 @@
 size = Vector2(64, 192)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bwkyw"]
-size = Vector2(64, 105)
+resource_local_to_scene = true
+size = Vector2(64, 71)
 
 [sub_resource type="Animation" id="Animation_nyukl"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CollisionShape2D2/PipaUp:frame")
+tracks/0/path = NodePath("CollisionShapeTop/PipaUp:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -26,7 +27,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2D/PipaDown:frame")
+tracks/1/path = NodePath("CollisionShapeBottom/PipaDown:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -43,7 +44,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CollisionShape2D2/PipaUp:frame")
+tracks/0/path = NodePath("CollisionShapeTop/PipaUp:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -55,7 +56,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2D/PipaDown:frame")
+tracks/1/path = NodePath("CollisionShapeBottom/PipaDown:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -75,20 +76,11 @@ _data = {
 collision_layer = 4
 script = ExtResource("1_nyukl")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1716698709]
-position = Vector2(0, 154)
+[node name="CollisionShapeTop" type="CollisionShape2D" parent="." unique_id=1131308575]
+position = Vector2(0, -135)
 shape = SubResource("RectangleShape2D_ajdik")
 
-[node name="PipaDown" type="Sprite2D" parent="CollisionShape2D" unique_id=718013523]
-position = Vector2(0, -1)
-texture = ExtResource("2_nyukl")
-hframes = 2
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1131308575]
-position = Vector2(0, -157)
-shape = SubResource("RectangleShape2D_ajdik")
-
-[node name="PipaUp" type="Sprite2D" parent="CollisionShape2D2" unique_id=350570378]
+[node name="PipaUp" type="Sprite2D" parent="CollisionShapeTop" unique_id=350570378]
 position = Vector2(0, 0.25)
 rotation = 3.1415927
 texture = ExtResource("2_nyukl")
@@ -97,9 +89,18 @@ hframes = 2
 [node name="ScoreArea" type="Area2D" parent="." unique_id=1897321108]
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ScoreArea" unique_id=1053032306]
-position = Vector2(0, -1.5)
+[node name="CollisionShapeScoreArea" type="CollisionShape2D" parent="ScoreArea" unique_id=1053032306]
+unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_bwkyw")
+
+[node name="CollisionShapeBottom" type="CollisionShape2D" parent="." unique_id=1716698709]
+position = Vector2(0, 135)
+shape = SubResource("RectangleShape2D_ajdik")
+
+[node name="PipaDown" type="Sprite2D" parent="CollisionShapeBottom" unique_id=718013523]
+position = Vector2(0, -1)
+texture = ExtResource("2_nyukl")
+hframes = 2
 
 [node name="PipaPlayer" type="AnimationPlayer" parent="." unique_id=108734275]
 libraries/ = SubResource("AnimationLibrary_xcrw2")

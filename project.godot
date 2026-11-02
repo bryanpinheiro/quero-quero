@@ -22,11 +22,14 @@ config/windows_native_icon="res://asset/bird-bw2.ico"
 EventBus="*uid://cnxvww4mkrdf4"
 SoundManager="*uid://0ne5v80l5704"
 GameManager="*uid://c6po2628qxwmv"
+MechanicsManager="*uid://bn5b6abm6q82p"
 
 [display]
 
 window/size/viewport_width=384
 window/size/viewport_height=216
+window/size/window_width_override=1152
+window/size/window_height_override=648
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 

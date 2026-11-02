@@ -6,6 +6,7 @@ var score: int = 0
 @onready var background_player: AnimationPlayer = $BackgroundPlayer
 
 func _ready() -> void:
+	MechanicsManager.reset()
 	EventBus.play_main_music.emit()
 	EventBus.scored.connect(_on_scored)
 	score_label.text = str("[wave]", score)
