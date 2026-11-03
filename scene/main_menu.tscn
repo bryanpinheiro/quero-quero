@@ -67,11 +67,23 @@ grow_vertical = 2
 
 [node name="Play" type="Button" parent="VBoxContainer" unique_id=554526789]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Jogar"
 
 [node name="Fullscreen" type="Button" parent="VBoxContainer" unique_id=789273252]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Tela cheia"
+
+[node name="Sponsor" type="Button" parent="VBoxContainer" unique_id=1581171959]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = " Patrocinar "
+
+[node name="Clean" type="Button" parent="VBoxContainer" unique_id=203031623]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Limpar"
 
 [node name="GameTitleLabel" type="RichTextLabel" parent="." unique_id=259480892]
 layout_mode = 1
@@ -117,3 +129,6 @@ vertical_alignment = 1
 [connection signal="pressed" from="VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="mouse_entered" from="VBoxContainer/Fullscreen" to="." method="_on_fullscreen_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/Fullscreen" to="." method="_on_fullscreen_pressed"]
+[connection signal="pressed" from="VBoxContainer/Sponsor" to="." method="_on_sponsor_pressed"]
+[connection signal="pressed" from="VBoxContainer/Clean" to="." method="_on_limpar_pressed"]
+[connection signal="pressed" from="VBoxContainer/Clean" to="." method="_on_clean_pressed"]

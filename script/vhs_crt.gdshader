@@ -1,18 +1,14 @@
 shader_type canvas_item;
-// vhs-crt — merged VHS + consumer-CRT in a single node: tape wiggle,
-// chroma smear (YIQ blur), barrel warp, de-convergence, sharpening,
-// scanlines, mask, vignette and bezel — one shader, one rect, and NO
-// BackBufferCopy between stages (saves a full-screen copy vs stacking
-// vhs.gdshader + crt-consumer-1w.gdshader).
-// Note: in a real two-pass stack the CRT taps read post-VHS pixels;
-// here they read the raw frame at the wiggled+warped coordinate —
-// visually near-identical, the smear is low-frequency anyway.
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
 
 // ---- VHS ----
-uniform float wiggle : hint_range(0.0, 5.0, 0.1) = 0.7; // Wiggle
-uniform float smear : hint_range(0.0, 1.0, 0.05) = 0.5; // Chroma Smear
+uniform float wiggle : hint_range(0.0, 5.0, 0.1) = 1.0; // Wiggle
+uniform float smear : hint_range(0.0, 1.0, 0.05) = 1.0; // Chroma Smear
+uniform float chroma_aberr : hint_range(0.0, 10.0) = 3.0;   // RGB fringe at edges (px)
+uniform float noise : hint_range(0.0, 0.5) = 0.101;         // tape static grain
+uniform float noise_size : hint_range(0.5, 4.0) = 1.6;      // grain chunkiness
+uniform float color_bleed : hint_range(0.0, 1.0) = 0.301;   // vertical chroma trail
 
 // ---- CRT ----
 uniform float u_sharp : hint_range(0.0, 0.5, 0.01) = 0.25; // Reverse Sharpness
@@ -117,7 +113,7 @@ void fragment() {
 	float r = fc7*(2.0*s);
 	uv.x += abs(r*pow(min(.003, (-uv.y+(.01*mod(fc7, 17.0))))*3.0, 2.0));
 	d = .051+abs(sin(s/4.0));
-	float c = max(0.0001, .002*d) * smear;
+	float c = max(0.0001, .006*d) * smear;
 
 	vec3 vhs_col;
 	if (smear > 0.0) {
@@ -154,6 +150,25 @@ void fragment() {
 	// mix the spatial CRT stage with the smeared VHS signal —
 	// smear is the dominant look when enabled
 	col = smear > 0.0 ? mix(col, vhs_col, 0.7) : vhs_col;
+
+	// ---- VHS texture pass: fringe + bleed + static grain ---------
+	if (chroma_aberr > 0.0) {
+		float edge = 0.4 + abs(uv.x - 0.5) * 1.4;
+		vec2 cab = vec2(chroma_aberr * SCREEN_PIXEL_SIZE.x * edge, 0.0);
+		col.r = mix(col.r, texture(screen_texture, uv - cab).r, 0.8);
+		col.b = mix(col.b, texture(screen_texture, uv + cab).b, 0.8);
+	}
+	if (color_bleed > 0.0) {
+		float bl = color_bleed * 4.0 * SCREEN_PIXEL_SIZE.y;
+		col.g = mix(col.g, texture(screen_texture,
+		           uv + vec2(0.0, bl)).g, 0.35);
+	}
+	if (noise > 0.0) {
+		vec2 g = floor(SCREEN_UV / SCREEN_PIXEL_SIZE / noise_size);
+		float nz = fract(sin(dot(g + mod(fc7 * 13.0, 999.0),
+		            vec2(12.9898, 78.233))) * 43758.5453);
+		col += (nz - 0.5) * noise * 2.0;
+	}
 
 	if (u_smptec == 1.0)
 		col *= transpose(mat3(vec3(0.8407, 0.0809, 0.0663), vec3(-0.0373, 0.9960, 0.0363), vec3(0.0089, -0.0411, 1.1619)));

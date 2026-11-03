@@ -1,0 +1,120 @@
+[gd_scene format=3 uid="uid://b8fwneb5chh0j"]
+
+[ext_resource type="Script" uid="uid://dfk6gmc03vwt0" path="res://script/post_fx.gd" id="1_u47uv"]
+[ext_resource type="Shader" uid="uid://b8jj6w4l4mubp" path="res://script/hit_feedback.gdshader" id="2_d0vva"]
+[ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs_crt.gdshader" id="2_ywt6w"]
+[ext_resource type="Shader" uid="uid://dwjwxfdvd5a3q" path="res://script/speed_blur_2d.gdshader" id="3_xethn"]
+[ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="5_aq3xg"]
+[ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_jnxme"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u47uv"]
+shader = ExtResource("2_d0vva")
+shader_parameter/hit_time = -10.0
+shader_parameter/clock = 0.0
+shader_parameter/pulses = 1
+shader_parameter/pulse_freq = 2.0
+shader_parameter/decay = 4.0
+shader_parameter/trauma = 1.0
+shader_parameter/shake = 50.0
+shader_parameter/shake_speed = 30.0
+shader_parameter/flash = 0.5
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/chromatic = 0.4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xethn"]
+shader = ExtResource("3_xethn")
+shader_parameter/intensity = 1.0
+shader_parameter/direction = 3.14
+shader_parameter/length = 0.25
+shader_parameter/steps = 32
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/streak_zone = 0.25
+shader_parameter/streak_soft = 0.05
+shader_parameter/edge_jitter = 0.05
+shader_parameter/flow = 1.0
+shader_parameter/flow_speed = 20.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ywt6w"]
+shader = ExtResource("2_ywt6w")
+shader_parameter/wiggle = 1.0
+shader_parameter/smear = 1.0
+shader_parameter/chroma_aberr = 3.0
+shader_parameter/noise = 0.101
+shader_parameter/noise_size = 1.6
+shader_parameter/color_bleed = 0.301
+shader_parameter/u_sharp = 0.25
+shader_parameter/u_warp = 0.08
+shader_parameter/u_overscanx = 0.3
+shader_parameter/u_overscany = 0.3
+shader_parameter/u_scan = 0.45
+shader_parameter/u_wid = 2.0
+shader_parameter/u_mask = 0.3
+shader_parameter/u_slot = 0.0
+shader_parameter/slot_str = 0.7
+shader_parameter/u_deconv = 0.3
+shader_parameter/u_brightb = 1.35
+shader_parameter/u_vignette = 0.2
+shader_parameter/u_smptec = 0.0
+shader_parameter/OriginalHistorySize1 = Vector4(0, 0, 0, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1148699116]
+script = ExtResource("1_u47uv")
+
+[node name="CR_HitFeedback" type="ColorRect" parent="." unique_id=1137738210]
+material = SubResource("ShaderMaterial_u47uv")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BBC1" type="BackBufferCopy" parent="." unique_id=75602906]
+position = Vector2(-2.9999695, -3)
+scale = Vector2(1.95, 1.1100001)
+copy_mode = 2
+rect = Rect2(0, 0, 200, 200)
+
+[node name="CR_SpeedBlur2D" type="ColorRect" parent="." unique_id=723802668]
+material = SubResource("ShaderMaterial_xethn")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BBC2" type="BackBufferCopy" parent="." unique_id=918798112]
+position = Vector2(-1.9999695, -2.9999847)
+scale = Vector2(1.9449999, 1.105)
+copy_mode = 2
+rect = Rect2(0, 0, 200, 200)
+
+[node name="ScoreLabel" type="RichTextLabel" parent="." unique_id=1786670371]
+unique_name_in_owner = true
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 46.0
+offset_bottom = 45.0
+theme = ExtResource("5_jnxme")
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[rainbow]BUG"
+fit_content = true
+autowrap_mode = 0
+
+[node name="GameOverScreen" parent="." unique_id=1408744853 instance=ExtResource("5_aq3xg")]
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1949456364]
+position = Vector2(192, 108)
+scale = Vector2(1.92, 1.08)
+copy_mode = 2
+
+[node name="CR_VHS_CRT" type="ColorRect" parent="." unique_id=1063038103]
+material = SubResource("ShaderMaterial_ywt6w")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

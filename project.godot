@@ -23,6 +23,7 @@ EventBus="*uid://cnxvww4mkrdf4"
 SoundManager="*uid://0ne5v80l5704"
 GameManager="*uid://c6po2628qxwmv"
 MechanicsManager="*uid://bn5b6abm6q82p"
+PostFX="*uid://b8fwneb5chh0j"
 
 [display]
 

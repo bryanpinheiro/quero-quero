@@ -9,10 +9,17 @@ const SAVE_PATH = "user://save.tres"
 func _ready() -> void:
 	load_data()
 	EventBus.game_finished.connect(_on_game_finished)
-
+	
+	
 func save_data() -> void:
 	game_data.score = 10
 	var error: int = ResourceSaver.save(game_data, SAVE_PATH)
+	
+	
+func clear_data() -> void:
+	game_data = GameData.new()
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)
 	
 	
 func load_data() -> void:
@@ -21,6 +28,7 @@ func load_data() -> void:
 		save_data()
 	else:
 		game_data = _loaded_data
+
 
 func _on_game_finished(score: int) -> void:
 	game_data.score = score

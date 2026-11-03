@@ -3,31 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dsbo668u45bio" path="res://scene/player.tscn" id="1_itxqv"]
 [ext_resource type="Script" uid="uid://b7a32kchquasl" path="res://scene/main.gd" id="1_wp4xf"]
 [ext_resource type="Script" uid="uid://bdf0m52kjh6vk" path="res://script/spawner.gd" id="2_v0l8b"]
-[ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="4_0ha60"]
-[ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_p1hux"]
 [ext_resource type="Texture2D" uid="uid://ctj0jxex5rk66" path="res://asset/background-spritesheet.png" id="6_4j5ol"]
-[ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs_crt.gdshader" id="7_p1hux"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bwkyw"]
-shader = ExtResource("7_p1hux")
-shader_parameter/wiggle = 0.7
-shader_parameter/smear = 0.5
-shader_parameter/u_sharp = 0.25
-shader_parameter/u_warp = 0.08
-shader_parameter/u_overscanx = 0.3
-shader_parameter/u_overscany = 0.3
-shader_parameter/u_scan = 0.45
-shader_parameter/u_wid = 2.0
-shader_parameter/u_mask = 0.3
-shader_parameter/u_slot = 0.0
-shader_parameter/slot_str = 0.7
-shader_parameter/u_deconv = 0.3
-shader_parameter/u_brightb = 1.35
-shader_parameter/u_vignette = 0.2
-shader_parameter/u_smptec = 0.0
-shader_parameter/OriginalHistorySize1 = Vector4(0, 0, 0, 0)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ajdik"]
 
 [sub_resource type="Animation" id="Animation_4j5ol"]
 length = 0.001
@@ -41,7 +17,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [19]
 }
 
 [sub_resource type="Animation" id="Animation_p1hux"]
@@ -75,6 +51,7 @@ texture_filter = 1
 position = Vector2(192, 108)
 texture = ExtResource("6_4j5ol")
 hframes = 20
+frame = 19
 
 [node name="Player" parent="." unique_id=675860985 instance=ExtResource("1_itxqv")]
 position = Vector2(29, 117)
@@ -86,32 +63,6 @@ script = ExtResource("2_v0l8b")
 
 [node name="Timer" type="Timer" parent="Spawner" unique_id=1185977630]
 autostart = true
-
-[node name="HUD" type="CanvasLayer" parent="." unique_id=259716043]
-process_mode = 3
-
-[node name="ScoreLabel" type="RichTextLabel" parent="HUD" unique_id=2112862385]
-unique_name_in_owner = true
-offset_left = 5.0
-offset_right = 45.0
-offset_bottom = 40.0
-theme = ExtResource("5_p1hux")
-bbcode_enabled = true
-text = "[rainbow]BUG"
-fit_content = true
-autowrap_mode = 0
-
-[node name="GameOverScreen" parent="HUD" unique_id=1408744853 instance=ExtResource("4_0ha60")]
-
-[node name="VHS_CRT_RECT_SHADER" type="TextureRect" parent="HUD" unique_id=467638894]
-material = SubResource("ShaderMaterial_bwkyw")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("PlaceholderTexture2D_ajdik")
 
 [node name="BackgroundPlayer" type="AnimationPlayer" parent="." unique_id=1714575528]
 unique_name_in_owner = true

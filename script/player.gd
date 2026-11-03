@@ -30,7 +30,7 @@ func _physics_process(delta):
 
 	var raw_gravity = get_gravity().y
 	var final_gravity = raw_gravity * current_gravity_weight
-	velocity.y += final_gravity
+	velocity.y += final_gravity * delta
 
 	if alive:
 		if Input.is_action_just_pressed("jump"):
@@ -53,6 +53,7 @@ func _on_screen_exited():
 
 func game_over() -> void:
 	if alive == true:
+		PostFX.hit_feedback()
 		EventBus.audio_player_collided.emit()
 		animated_sprite.pause()
 		animation_player.stop()

@@ -8,11 +8,13 @@ func _ready() -> void:
 	
 
 func _on_restart_pressed() -> void:
+	hide()
 	EventBus.restart_main_music.emit()
 	get_tree().reload_current_scene()
 
 
 func _on_menu_pressed() -> void:
+	hide()
 	EventBus.stop_main_music.emit()
 	get_tree().change_scene_to_file("res://scene/main_menu.tscn")
 	
