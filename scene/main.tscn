@@ -6,34 +6,28 @@
 [ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="4_0ha60"]
 [ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_p1hux"]
 [ext_resource type="Texture2D" uid="uid://ctj0jxex5rk66" path="res://asset/background-spritesheet.png" id="6_4j5ol"]
-[ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs.gdshader" id="7_p1hux"]
-[ext_resource type="Shader" uid="uid://ctixbvm7nslts" path="res://script/crt.gdshader" id="8_crt"]
+[ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs_crt.gdshader" id="7_p1hux"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bwkyw"]
 shader = ExtResource("7_p1hux")
-shader_parameter/wiggle = 1.0000000149012
+shader_parameter/wiggle = 0.7
 shader_parameter/smear = 0.5
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ajdik"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_p1hux"]
-shader = ExtResource("8_crt")
-shader_parameter/dummy2 = 0.0
-shader_parameter/u_sharp = 0.249999994412
-shader_parameter/u_warp = 0.07999999821184
+shader_parameter/u_sharp = 0.25
+shader_parameter/u_warp = 0.08
 shader_parameter/u_overscanx = 0.3
 shader_parameter/u_overscany = 0.3
-shader_parameter/res_flash = 0.0
-shader_parameter/u_scan = 0.45000000670554
+shader_parameter/u_scan = 0.45
 shader_parameter/u_wid = 2.0
 shader_parameter/u_mask = 0.3
 shader_parameter/u_slot = 0.0
 shader_parameter/slot_str = 0.7
 shader_parameter/u_deconv = 0.3
 shader_parameter/u_brightb = 1.35
-shader_parameter/u_vignette = 0.1999999955296
+shader_parameter/u_vignette = 0.2
 shader_parameter/u_smptec = 0.0
 shader_parameter/OriginalHistorySize1 = Vector4(0, 0, 0, 0)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ajdik"]
 
 [sub_resource type="Animation" id="Animation_4j5ol"]
 length = 0.001
@@ -109,24 +103,8 @@ autowrap_mode = 0
 
 [node name="GameOverScreen" parent="HUD" unique_id=1408744853 instance=ExtResource("4_0ha60")]
 
-[node name="VHS_RECT_SHADER" type="TextureRect" parent="HUD" unique_id=467638894]
+[node name="VHS_CRT_RECT_SHADER" type="TextureRect" parent="HUD" unique_id=467638894]
 material = SubResource("ShaderMaterial_bwkyw")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("PlaceholderTexture2D_ajdik")
-
-[node name="BackBufferCopy" type="BackBufferCopy" parent="HUD" unique_id=1695094961]
-position = Vector2(-3, -3.9999998)
-scale = Vector2(1.945, 1.125)
-copy_mode = 2
-rect = Rect2(0, 0, 200, 200)
-
-[node name="CRT_RECT_SHADER" type="TextureRect" parent="HUD" unique_id=619063205]
-material = SubResource("ShaderMaterial_p1hux")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
