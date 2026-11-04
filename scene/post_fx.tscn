@@ -1,51 +1,37 @@
 [gd_scene format=3 uid="uid://b8fwneb5chh0j"]
 
 [ext_resource type="Script" uid="uid://dfk6gmc03vwt0" path="res://script/post_fx.gd" id="1_u47uv"]
-[ext_resource type="Shader" uid="uid://b8jj6w4l4mubp" path="res://script/hit_feedback.gdshader" id="2_d0vva"]
 [ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs_crt.gdshader" id="2_ywt6w"]
-[ext_resource type="Shader" uid="uid://ln2bf14b0i1a" path="res://script/pulse_chromatic.gdshader" id="3_p68x8"]
-[ext_resource type="Shader" uid="uid://dwjwxfdvd5a3q" path="res://script/speed_blur_2d.gdshader" id="3_xethn"]
 [ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="5_aq3xg"]
 [ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_jnxme"]
+[ext_resource type="Shader" uid="uid://dkjlspnnvqf03" path="res://script/juice.gdshader" id="9_juice"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u47uv"]
-shader = ExtResource("2_d0vva")
-shader_parameter/hit_time = -10.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_juice"]
+shader = ExtResource("9_juice")
 shader_parameter/clock = 0.0
-shader_parameter/pulses = 2
-shader_parameter/pulse_freq = 5.00000021375
-shader_parameter/decay = 2.50000007125
-shader_parameter/trauma = 1.0
-shader_parameter/shake = 90.000004275
-shader_parameter/shake_speed = 12.0000003325
-shader_parameter/zoom_kick = 0.1200000057
-shader_parameter/flash = 0.800000038
-shader_parameter/flash_color = Color(1, 1, 1, 1)
-shader_parameter/chromatic = 0.800000038
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rd04h"]
-shader = ExtResource("3_p68x8")
 shader_parameter/hit_time = -10.0
-shader_parameter/clock = 0.0
-shader_parameter/mode = 0
-shader_parameter/duration = 0.65000002435523
-shader_parameter/fringe = 0.7
-shader_parameter/intensity = 0.85
+shader_parameter/hit_duration = 1.0
+shader_parameter/hit_shake = 90.0
+shader_parameter/hit_flash = 0.8
+shader_parameter/hit_flash_color = Color(1, 1, 1, 1)
+shader_parameter/pulse_time = -10.0
+shader_parameter/pulse_mode = 0
+shader_parameter/pulse_duration = 0.9
+shader_parameter/pulse_paint_duration = 0.35
+shader_parameter/pulse_fringe = 0.7
+shader_parameter/pulse_intensity = 0.85
 shader_parameter/hue_span = 1.5
 shader_parameter/saturation = 1.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xethn"]
-shader = ExtResource("3_xethn")
-shader_parameter/intensity = 1.0
+shader_parameter/speed_intensity = 0.0
 shader_parameter/direction = 3.14
 shader_parameter/length = 0.25
-shader_parameter/steps = 32
-shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/steps = 24
 shader_parameter/streak_zone = 0.25
 shader_parameter/streak_soft = 0.05
 shader_parameter/edge_jitter = 0.05
 shader_parameter/flow = 1.0
 shader_parameter/flow_speed = 20.0
+shader_parameter/center = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ywt6w"]
 shader = ExtResource("2_ywt6w")
@@ -73,47 +59,14 @@ shader_parameter/OriginalHistorySize1 = Vector4(0, 0, 0, 0)
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1148699116]
 script = ExtResource("1_u47uv")
 
-[node name="CR_HitFeedback" type="ColorRect" parent="." unique_id=1137738210]
-material = SubResource("ShaderMaterial_u47uv")
+[node name="CR_Juice" type="ColorRect" parent="." unique_id=542376842]
+material = SubResource("ShaderMaterial_juice")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="BBC0" type="BackBufferCopy" parent="." unique_id=966536789]
-copy_mode = 2
-
-[node name="CR_PulseChromatic" type="ColorRect" parent="." unique_id=317788073]
-material = SubResource("ShaderMaterial_rd04h")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="BBC1" type="BackBufferCopy" parent="." unique_id=75602906]
-position = Vector2(-2.9999695, -3)
-scale = Vector2(1.95, 1.1100001)
-copy_mode = 2
-rect = Rect2(0, 0, 200, 200)
-
-[node name="CR_SpeedBlur2D" type="ColorRect" parent="." unique_id=723802668]
-material = SubResource("ShaderMaterial_xethn")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="BBC2" type="BackBufferCopy" parent="." unique_id=918798112]
-position = Vector2(-1.9999695, -2.9999847)
-scale = Vector2(1.9449999, 1.105)
-copy_mode = 2
-rect = Rect2(0, 0, 200, 200)
 
 [node name="ScoreLabel" type="RichTextLabel" parent="." unique_id=1786670371]
 unique_name_in_owner = true

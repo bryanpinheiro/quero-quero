@@ -3,6 +3,7 @@
 [ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="1_hxu56"]
 [ext_resource type="FastNoiseLite" uid="uid://gobxij2gxp2b" path="res://resources/noise_lite.tres" id="3_0iwki"]
 [ext_resource type="Script" uid="uid://jc7soy4n0i6n" path="res://script/main_menu.gd" id="3_2fwvj"]
+[ext_resource type="Texture2D" path="res://asset/pix-qrcode.jpeg" id="4_pixqr"]
 
 [sub_resource type="Gradient" id="Gradient_jsx4g"]
 offsets = PackedFloat32Array(0.23287672, 1)
@@ -70,8 +71,17 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Jogar"
 
-[node name="Fullscreen" type="Button" parent="VBoxContainer" unique_id=789273252]
+[node name="ResolutionRow" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="ResolutionOption" type="OptionButton" parent="VBoxContainer/ResolutionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+
+[node name="Fullscreen" type="Button" parent="VBoxContainer/ResolutionRow" unique_id=789273252]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 text = "Tela cheia"
 
@@ -125,10 +135,57 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
+
+[node name="SponsorPopup" type="CanvasLayer" parent="."]
+layer = 10
+visible = false
+
+[node name="Dimmer" type="ColorRect" parent="SponsorPopup"]
+color = Color(0, 0, 0, 0.75)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="SponsorPopup"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="SponsorPopup/Center"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="SponsorPopup/Center/Panel"]
+layout_mode = 2
+
+[node name="QRCode" type="TextureRect" parent="SponsorPopup/Center/Panel/VBox"]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+texture = ExtResource("4_pixqr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PixLabel" type="Label" parent="SponsorPopup/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "PIX: bryanpsouz@gmail.com"
+horizontal_alignment = 1
+
+[node name="HintLabel" type="Label" parent="SponsorPopup/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1.0)
+text = "clique ou ESC para fechar"
+horizontal_alignment = 1
+
 [connection signal="mouse_entered" from="VBoxContainer/Play" to="." method="_on_play_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/Fullscreen" to="." method="_on_fullscreen_mouse_entered"]
-[connection signal="pressed" from="VBoxContainer/Fullscreen" to="." method="_on_fullscreen_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/ResolutionRow/Fullscreen" to="." method="_on_fullscreen_mouse_entered"]
+[connection signal="pressed" from="VBoxContainer/ResolutionRow/Fullscreen" to="." method="_on_fullscreen_pressed"]
 [connection signal="pressed" from="VBoxContainer/Sponsor" to="." method="_on_sponsor_pressed"]
 [connection signal="pressed" from="VBoxContainer/Clean" to="." method="_on_limpar_pressed"]
 [connection signal="pressed" from="VBoxContainer/Clean" to="." method="_on_clean_pressed"]

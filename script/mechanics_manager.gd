@@ -101,14 +101,15 @@ func _update_current_values() -> void:
 	current_spacing = settings["spawn_spacing"]
 	
 	if SPEED_BLUR_SETTINGS.has(pace_name):
-		PostFX.set_speed_visible(true)
 		var b = SPEED_BLUR_SETTINGS[pace_name]
 		if b.is_empty():
-			PostFX.reset_defaults("CR_SpeedBlur2D")
+			# DONE: merged juice pass owns the speed blur params now
+			PostFX.reset_defaults("CR_Juice")
 		else:
 			PostFX.set_speed_streak_zone(b.streak_zone)
 			PostFX.set_speed_length(b.length)
 			PostFX.set_speed_flow(b.flow_speed)
+		PostFX.set_speed_visible(true)
 	else:
 		PostFX.set_speed_visible(false)
 		
