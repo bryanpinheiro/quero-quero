@@ -2,19 +2,29 @@ extends CanvasLayer
 
 @onready var cr_hit_feedback: ColorRect = $CR_HitFeedback
 @onready var cr_speed_blur_2d: ColorRect = $CR_SpeedBlur2D
+@onready var cr_pulse_chromatic: ColorRect = $CR_PulseChromatic
 
+@onready var bbc_0: BackBufferCopy = $BBC0
 @onready var bbc_1: BackBufferCopy = $BBC1
 @onready var bbc_2: BackBufferCopy = $BBC2
 @onready var score_label: RichTextLabel = %ScoreLabel
 
-const FX_RECTS := ["CR_HitFeedback", "CR_SpeedBlur2D", "CR_VHS_CRT"]
+const FX_RECTS := ["CR_HitFeedback", "CR_PulseChromatic", "CR_SpeedBlur2D", "CR_VHS_CRT"]
 var _defaults := {}
 var _shader_clock := 0.0
+var _pulse_mode := 1
+
+var _hit_hide_t := -1.0
+var _pulse_hide_t := -1.0
+const HIT_LIFE := 1.2
+const PULSE_LIFE := 0.8
 
 func _ready() -> void:
 	save_defaults()
 	cr_hit_feedback.visible = false
+	cr_pulse_chromatic.visible = false    
 	cr_speed_blur_2d.visible = false
+	bbc_0.visible = false                 
 	bbc_1.visible = false
 	bbc_2.visible = false
 	score_label.visible = false
@@ -24,21 +34,44 @@ func _process(delta: float) -> void:
 	_shader_clock += delta
 	if cr_hit_feedback != null:
 		cr_hit_feedback.material.set_shader_parameter("clock", _shader_clock)
+	if cr_pulse_chromatic != null:
+		cr_pulse_chromatic.material.set_shader_parameter("clock", _shader_clock)
+
+	var bbcs_dirty := false
+	if _hit_hide_t >= 0.0:
+		_hit_hide_t -= delta
+		if _hit_hide_t < 0.0:
+			cr_hit_feedback.visible = false
+			bbcs_dirty = true
+	if _pulse_hide_t >= 0.0:
+		_pulse_hide_t -= delta
+		if _pulse_hide_t < 0.0:
+			cr_pulse_chromatic.visible = false
+			bbcs_dirty = true
+	if bbcs_dirty:
+		_update_bbcs()
  
 
 func _update_bbcs() -> void:
-	if bbc_1 == null or bbc_2 == null or cr_hit_feedback == null:
+	if bbc_0 == null or bbc_1 == null or bbc_2 == null:
 		return
-	bbc_1.visible = cr_speed_blur_2d.visible and cr_hit_feedback.visible
-	bbc_2.visible = (cr_hit_feedback.visible or cr_speed_blur_2d.visible)
+		
+	bbc_0.visible = cr_hit_feedback.visible and cr_pulse_chromatic.visible
+	
+	bbc_1.visible = cr_speed_blur_2d.visible and (cr_hit_feedback.visible or cr_pulse_chromatic.visible)
+		
+	bbc_2.visible = (cr_hit_feedback.visible or cr_pulse_chromatic.visible or cr_speed_blur_2d.visible)
 
 
 func enable_juice(on: bool) -> void:
 	if cr_hit_feedback == null or cr_speed_blur_2d == null:
 		return
-	cr_hit_feedback.visible = on
+	# event rects stay hidden — pulse()/hit_feedback() show them
+	# only for the duration of their effect
+	cr_hit_feedback.visible = false
+	cr_pulse_chromatic.visible = false
 	cr_speed_blur_2d.visible = on
-	score_label.visible = on 
+	score_label.visible = on
 	_update_bbcs()
  
 
@@ -48,7 +81,20 @@ func hit_feedback() -> void:
 		
 	cr_hit_feedback.visible = true
 	cr_hit_feedback.material.set_shader_parameter("hit_time", _shader_clock)
-	cr_hit_feedback.material.set_shader_parameter("pulses", 1)
+	_hit_hide_t = HIT_LIFE
+	_update_bbcs()
+	
+	
+func pulse() -> void:
+	if cr_pulse_chromatic == null:
+		return
+	cr_pulse_chromatic.visible = true
+	cr_pulse_chromatic.material.set_shader_parameter("hit_time", _shader_clock)
+
+	cr_pulse_chromatic.material.set_shader_parameter("mode", _pulse_mode)
+	_pulse_mode = 3 - _pulse_mode
+	_pulse_hide_t = PULSE_LIFE
+
 	_update_bbcs()
  
 

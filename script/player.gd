@@ -21,7 +21,7 @@ func _ready() -> void:
 		current_pace = pace_name
 		target_gravity = new_gravity
 		target_jump = new_jump
-		print("Entrando no Pace: ", current_pace)
+		#print("Entrando no Pace: ", current_pace)
 	)
 
 func _physics_process(delta):

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dfk6gmc03vwt0" path="res://script/post_fx.gd" id="1_u47uv"]
 [ext_resource type="Shader" uid="uid://b8jj6w4l4mubp" path="res://script/hit_feedback.gdshader" id="2_d0vva"]
 [ext_resource type="Shader" uid="uid://kxjvhl6rshmg" path="res://script/vhs_crt.gdshader" id="2_ywt6w"]
+[ext_resource type="Shader" uid="uid://ln2bf14b0i1a" path="res://script/pulse_chromatic.gdshader" id="3_p68x8"]
 [ext_resource type="Shader" uid="uid://dwjwxfdvd5a3q" path="res://script/speed_blur_2d.gdshader" id="3_xethn"]
 [ext_resource type="PackedScene" uid="uid://b1cdtfldftnby" path="res://scene/game_over_screen.tscn" id="5_aq3xg"]
 [ext_resource type="Theme" uid="uid://dabna7wo81jt5" path="res://resources/bryan_theme_00.tres" id="5_jnxme"]
@@ -11,15 +12,27 @@
 shader = ExtResource("2_d0vva")
 shader_parameter/hit_time = -10.0
 shader_parameter/clock = 0.0
-shader_parameter/pulses = 1
-shader_parameter/pulse_freq = 2.0
-shader_parameter/decay = 4.0
+shader_parameter/pulses = 2
+shader_parameter/pulse_freq = 5.00000021375
+shader_parameter/decay = 2.50000007125
 shader_parameter/trauma = 1.0
-shader_parameter/shake = 50.0
-shader_parameter/shake_speed = 30.0
-shader_parameter/flash = 0.5
+shader_parameter/shake = 90.000004275
+shader_parameter/shake_speed = 12.0000003325
+shader_parameter/zoom_kick = 0.1200000057
+shader_parameter/flash = 0.800000038
 shader_parameter/flash_color = Color(1, 1, 1, 1)
-shader_parameter/chromatic = 0.4
+shader_parameter/chromatic = 0.800000038
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rd04h"]
+shader = ExtResource("3_p68x8")
+shader_parameter/hit_time = -10.0
+shader_parameter/clock = 0.0
+shader_parameter/mode = 0
+shader_parameter/duration = 0.65000002435523
+shader_parameter/fringe = 0.7
+shader_parameter/intensity = 0.85
+shader_parameter/hue_span = 1.5
+shader_parameter/saturation = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xethn"]
 shader = ExtResource("3_xethn")
@@ -69,6 +82,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="BBC0" type="BackBufferCopy" parent="." unique_id=966536789]
+copy_mode = 2
+
+[node name="CR_PulseChromatic" type="ColorRect" parent="." unique_id=317788073]
+material = SubResource("ShaderMaterial_rd04h")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="BBC1" type="BackBufferCopy" parent="." unique_id=75602906]
 position = Vector2(-2.9999695, -3)
 scale = Vector2(1.95, 1.1100001)
@@ -105,7 +130,7 @@ autowrap_mode = 0
 
 [node name="GameOverScreen" parent="." unique_id=1408744853 instance=ExtResource("5_aq3xg")]
 
-[node name="BackBufferCopy" type="BackBufferCopy" parent="." unique_id=1949456364]
+[node name="BBC3" type="BackBufferCopy" parent="." unique_id=1949456364]
 position = Vector2(192, 108)
 scale = Vector2(1.92, 1.08)
 copy_mode = 2

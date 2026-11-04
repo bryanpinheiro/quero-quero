@@ -19,6 +19,7 @@ func _ready() -> void:
 func _on_scored() -> void:
 	score += 1
 	PostFX.set_score(score)
+	PostFX.pulse()
 
 
 func _exit_tree() -> void:

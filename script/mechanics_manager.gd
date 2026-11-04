@@ -1,7 +1,7 @@
 extends Node
 
 # Quantos pontos o jogador precisa fazer para o pace mudar
-const POINTS_TO_CHANGE_PACE: int = 3
+const POINTS_TO_CHANGE_PACE: int = 1
 
 # Maior salto permitido entre paces na fase aleatória.
 # Ordem: warmup (0) -> moderate (1) -> fast (2) -> sprint (3)
@@ -11,10 +11,10 @@ const MAX_PACE_JUMP: int = 2
 const START_PACE_INDEX: int = 1
 
 const pace_settings: Dictionary = {
-	"warmup":   { "obstacle_speed": 120.0, "spawn_spacing": 180.0, "gap_height": 80.0,  "max_travel_up": 70, "max_travel_down": 100, "gravity_weight": 2.3, "jump_strength": 300.0 },
-	"moderate": { "obstacle_speed": 180.0, "spawn_spacing": 240.0, "gap_height": 75.0,  "max_travel_up": 80, "max_travel_down": 110, "gravity_weight": 1.8, "jump_strength": 280.0 },
-	"fast":     { "obstacle_speed": 335.0, "spawn_spacing": 280.0, "gap_height": 70.0,  "max_travel_up": 55, "max_travel_down": 95, "gravity_weight": 1.2, "jump_strength": 230.0 },
-	"sprint":   { "obstacle_speed": 465.0, "spawn_spacing": 350.0, "gap_height": 95.0, "max_travel_up": 40, "max_travel_down": 60, "gravity_weight": 2.5, "jump_strength": 440.0 }
+	"warmup":   { "obstacle_speed": 120.0, "spawn_spacing": 220.0, "gap_height": 85.0,  "max_travel_up": 70, "max_travel_down": 100, "gravity_weight": 2.0, "jump_strength": 310.0 },
+	"moderate": { "obstacle_speed": 180.0, "spawn_spacing": 240.0, "gap_height": 80.0,  "max_travel_up": 80, "max_travel_down": 110, "gravity_weight": 1.8, "jump_strength": 280.0 },
+	"fast":     { "obstacle_speed": 335.0, "spawn_spacing": 260.0, "gap_height": 75.0,  "max_travel_up": 55, "max_travel_down": 95, "gravity_weight": 1.2, "jump_strength": 230.0 },
+	"sprint":   { "obstacle_speed": 400.0, "spawn_spacing": 290.0, "gap_height": 100.0, "max_travel_up": 40, "max_travel_down": 60, "gravity_weight": 2.5, "jump_strength": 440.0 }
 }
 
 const pace_order: Array[String] = ["warmup", "moderate", "fast", "sprint"]
@@ -26,10 +26,10 @@ const SPEED_BLUR_SETTINGS := {
 
 # Chance relativa de cada pace ser sorteado
 const random_pace_chances: Dictionary = {
-	"warmup": 5,
-	"moderate": 20,
-	"fast": 40,
-	"sprint": 35
+	"warmup": 10,
+	"moderate": 35,
+	"fast": 35,
+	"sprint": 20
 }
 
 const SCORE_PADDING: float = 8.0
@@ -78,9 +78,6 @@ func change_pace(new_pace_index: int) -> void:
 	current_pace_index = new_pace_index
 	_update_current_values()
  
-	# gear shift: pipes em tela foram espaçados pro pace antigo —
-	# desacelera a convergência do world_speed pra suavizar a
-	# compressão de cadência durante a transição
 	speed_lerp_rate = 0.6
 	get_tree().create_timer(1.5).timeout.connect(func(): speed_lerp_rate = 1.5)
  

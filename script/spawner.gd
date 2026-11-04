@@ -26,13 +26,23 @@ func _on_timer_timeout():
 	_update_wait_time()
  
  
-# na troca de pace: respiro sem spawn + âncora zerada —
-# o último gap era da física antiga, o travel do novo
-# pace não consegue proteger posição do pace anterior
-func _on_pace_changed(_n, _s, _g, _grav, _j) -> void:
+# na troca de pace: respiro
+func _on_pace_changed(_n, new_speed, _g, _grav, _j) -> void:
 	last_gap_y = -1.0
-	timer.wait_time = 1.2
-	timer.start()
+ 
+	var speed_delta = new_speed - MechanicsManager.world_speed
+	
+	# acelerou: respiro escalado pelo pace novo; só aplica se maior que o countdown atual
+	if speed_delta > 0.0:
+		
+		# tempo que um obstáculo do pace novo leva para percorrer o spacing (ritmo do pace novo em segundos)
+		var next_beat = MechanicsManager.current_spacing / new_speed
+		
+		# 1 beat + extra pelo salto de speed (teto 0.5s), reduzido pelo fator
+		var breath = (next_beat + clamp(speed_delta * 0.002, 0.0, 0.5)) * 0.75
+		if breath > timer.time_left:
+			timer.wait_time = breath
+			timer.start()
  
  
 func _update_wait_time() -> void:

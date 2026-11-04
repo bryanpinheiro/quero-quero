@@ -1,20 +1,48 @@
 shader_type canvas_item;
+// hit-feedback — screen damage feedback: frame shake + zoom punch
+// + edge flash + small RGB split, all fading together over ~1.2s.
+//
+// HOW TO USE
+// The effect is a stopwatch: `clock` ticks every frame, `hit_time`
+// stamps the moment of the hit — the shader plays the animation
+// between them, then idles by itself (no tweens, no timers).
+//   var clock := 0.0
+//   func _process(delta):           # every frame
+//       clock += delta
+//       mat.set_shader_parameter("clock", clock)
+//   func on_hit():                  # on damage
+//       mat.set_shader_parameter("hit_time", clock)
+//
+// PULSES — how many thumps one hit plays:
+//   1 = single punch (one-hit deaths)
+//   2-3 = lub-dub heartbeat (heavier hits)
+//   0 = infinite loop until re-triggered (low-health warning —
+//       set hit_time once on entering the state, keep shake = 0)
+//
+// ESCALATION — hits can stack instead of resetting: keep trauma
+// in game state and bump it per hit:
+//   trauma = clamp(trauma + 0.5, 0.0, 1.0); hit_time = clock
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;
 
-// CLOCK MODEL - hit_elapsed = clock - hit_time.
-
-uniform float hit_time = -10.0;                          // when the burst starts - set from code on hit
+// CLOCK MODEL — hit_elapsed = clock - hit_time.
+// clock and hit_time MUST share the same counter:
+//   clock    : "now"   — fed every frame from a code counter
+//   hit_time : "start" — set once per hit to that SAME counter
+// Both come from one variable (e.g. _clock += delta), so
+// hit_elapsed = seconds since the hit — no epoch math needed.
+uniform float hit_time = -10.0;                          // when the burst starts — set from code on hit
 uniform float clock = 0.0;                               // caller-fed clock (see above); >0 overrides TIME
-uniform int pulses : hint_range(0, 6) = 1;               // thumps per hit — 0 = infinite train
-uniform float pulse_freq : hint_range(0.5, 8.0) = 2.0;   // pulse spacing (Hz)
-uniform float decay : hint_range(1.0, 10.0) = 4.0;       // how fast each pulse fades
+uniform int pulses : hint_range(0, 6) = 2;               // thumps per hit — 0 = infinite train
+uniform float pulse_freq : hint_range(0.5, 8.0) = 5.0;   // pulse spacing (Hz)
+uniform float decay : hint_range(1.0, 10.0) = 2.5;       // how fast each pulse fades
 uniform float trauma : hint_range(0.0, 1.0) = 1.0;       // strength multiplier (escalate via code)
-uniform float shake : hint_range(0.0, 60.0) = 50.0;      // max pixel displacement (X and Y)
-uniform float shake_speed : hint_range(5.0, 60.0) = 30.0;// shake frequency
-uniform float flash : hint_range(0.0, 1.0) = 0.5;        // edge vignette flash
+uniform float shake : hint_range(0.0, 120.0) = 90.0;     // max pixel displacement (X and Y)
+uniform float shake_speed : hint_range(5.0, 60.0) = 12.0;// shake frequency
+uniform float zoom_kick : hint_range(0.0, 0.15) = 0.12;  // screen punch-in at impact (fraction — reads on flat backgrounds)
+uniform float flash : hint_range(0.0, 1.0) = 0.8;        // edge vignette flash
 uniform vec3 flash_color : source_color = vec3(1.0, 1.0, 1.0);
-uniform float chromatic : hint_range(0.0, 1.0) = 0.4;    // RGB split kick on impact
+uniform float chromatic : hint_range(0.0, 1.0) = 0.8;    // RGB split kick on impact
 
 // hash12 — David Hoskins' "hash without sine": turns a 2D position
 // into a pseudo-random 0..1 value (no textures, no tables)
@@ -70,6 +98,11 @@ void fragment() {
 		// idle: no hit in flight — one tap and done (99% of frames)
 		color = texture(screen_texture, SCREEN_UV).rgb;
 	} else {
+		// zoom kick — punch the frame inward toward the hit; unlike pure
+		// displacement it changes every pixel, so it stays visible even
+		// over flat/uniform backgrounds where shake reads as nothing
+		vec2 uv = (SCREEN_UV - 0.5) * (1.0 - envelope * zoom_kick) + 0.5;
+
 		// organic shake — two noise channels, decays with the hit
 		vec2 shake_offset = vec2(
 			vnoise(vec2(TIME * shake_speed, 1.7)) - 0.5,
@@ -79,11 +112,11 @@ void fragment() {
 		// chromatic kick along the shake direction — 3 taps only when used
 		if (chromatic > 0.0) {
 			float chroma_offset = envelope * chromatic * 0.02;
-			color.r = texture(screen_texture, SCREEN_UV + shake_offset + shake_offset * chroma_offset).r;
-			color.g = texture(screen_texture, SCREEN_UV + shake_offset).g;
-			color.b = texture(screen_texture, SCREEN_UV + shake_offset - shake_offset * chroma_offset).b;
+			color.r = texture(screen_texture, uv + shake_offset + shake_offset * chroma_offset).r;
+			color.g = texture(screen_texture, uv + shake_offset).g;
+			color.b = texture(screen_texture, uv + shake_offset - shake_offset * chroma_offset).b;
 		} else {
-			color = texture(screen_texture, SCREEN_UV + shake_offset).rgb;
+			color = texture(screen_texture, uv + shake_offset).rgb;
 		}
 
 		// vignette flash — damage reads from the edges inward
