@@ -8,8 +8,6 @@ extends StaticBody2D
 
 @onready var pipa_player: AnimationPlayer = $PipaPlayer
 
-var speed: float = -1
-var target_speed: float = -1
 var gap_height: float = -1
 
 const PIPE_HALF_HEIGHT: float = 96.0
@@ -33,7 +31,9 @@ func update_gap() -> void:
 
 func _physics_process(delta):
 	position.x -= MechanicsManager.world_speed * delta
-
+	if global_position.x < -64.0:
+			queue_free()
+			
 
 func _on_score_area_body_entered(body):
 	EventBus.scored.emit()

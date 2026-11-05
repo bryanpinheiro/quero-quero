@@ -6,11 +6,20 @@ func _ready() -> void:
 	hide()
 	EventBus.game_finished.connect(_on_game_finished)
 	
-
-func _on_restart_pressed() -> void:
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("jump"):
+		restart()
+		
+		
+func restart() -> void:
 	hide()
 	EventBus.restart_main_music.emit()
 	get_tree().reload_current_scene()
+
+
+func _on_restart_pressed() -> void:
+	restart()
 
 
 func _on_menu_pressed() -> void:

@@ -58,7 +58,7 @@ position = Vector2(29, 117)
 collision_mask = 6
 
 [node name="Spawner" type="Marker2D" parent="." unique_id=1636085162]
-position = Vector2(421, 105)
+position = Vector2(420, 100)
 script = ExtResource("2_v0l8b")
 
 [node name="Timer" type="Timer" parent="Spawner" unique_id=1185977630]

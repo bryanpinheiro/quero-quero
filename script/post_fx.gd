@@ -1,12 +1,9 @@
 extends CanvasLayer
 
-# DONE: performance enhancement — one merged juice ColorRect replaces
-# the old chain (CR_HitFeedback + BBC0 + CR_PulseChromatic + BBC1 +
-# CR_SpeedBlur2D + BBC2). 9 fullscreen draws/blits → 2 passes + 1 blit.
 @onready var cr_juice: ColorRect = $CR_Juice
 @onready var score_label: RichTextLabel = %ScoreLabel
 
-const FX_RECTS := ["CR_Juice", "CR_VHS_CRT"]  # DONE: snapshot covers only the live rects
+const FX_RECTS := ["CR_Juice", "CR_VHS_CRT"]
 var _defaults := {}
 var _shader_clock := 0.0
 var _pulse_mode := 1
@@ -20,22 +17,18 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_shader_clock += delta
 	if cr_juice != null:
-		# DONE: single shared clock drives hit + pulse timing
 		cr_juice.material.set_shader_parameter("clock", _shader_clock)
 
 
 func enable_juice(on: bool) -> void:
 	if cr_juice == null:
 		return
-	# DONE: juice rect stays always visible (single merged pass) —
-	# effects idle via time uniforms; this only toggles the UI
 	score_label.visible = on
 
 
 func hit_feedback() -> void:
 	if cr_juice == null:
 		return
-	# DONE: hit = shake + white flash burst (no chroma — that's pulse's job)
 	cr_juice.material.set_shader_parameter("hit_time", _shader_clock)
 
 
@@ -44,13 +37,12 @@ func pulse() -> void:
 		return
 	cr_juice.material.set_shader_parameter("pulse_time", _shader_clock)
 	cr_juice.material.set_shader_parameter("pulse_mode", _pulse_mode)
-	# DONE: paint flash duration per pace — hand-tuned so the celebration
-	# lands without covering the player's read on fast paces
+
 	var pace_name: String = MechanicsManager.pace_order[MechanicsManager.current_pace_index]
 	var durations := {"warmup": 1.4, "moderate": 0.9, "fast": 0.6, "sprint": 0.35}
 	cr_juice.material.set_shader_parameter("pulse_paint_duration",
 		durations.get(pace_name, 0.35))
-	_pulse_mode = 3 - _pulse_mode  # DONE: strict 1↔2 alternation fringe↔paint
+	_pulse_mode = 3 - _pulse_mode
 
 
 func set_score(value: int) -> void:
@@ -62,7 +54,7 @@ func set_score(value: int) -> void:
 func set_speed_visible(on: bool) -> void:
 	if cr_juice == null:
 		return
-	# DONE: blur is gated on intensity — "visible" maps to the old default 1.0
+
 	cr_juice.material.set_shader_parameter("speed_intensity", 1.0 if on else 0.0)
 
 
@@ -115,8 +107,6 @@ func save_defaults() -> void:
 
 
 func reset_defaults(node_name: String = "") -> void:
-	# DONE: other autoloads (MechanicsManager) can call this before
-	# _ready ran the snapshot — build it lazily on first use
 	if _defaults.is_empty():
 		save_defaults()
 	var targets = _defaults.keys() if node_name == "" else [node_name]

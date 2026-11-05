@@ -1,7 +1,9 @@
 extends Node
 
 # Quantos pontos o jogador precisa fazer para o pace mudar
-const POINTS_TO_CHANGE_PACE: int = 1
+var POINTS_TO_CHANGE_PACE: int = 1
+var points_in_current_pace: int = 0
+var total_score: int = 0
 
 # Maior salto permitido entre paces na fase aleatória.
 # Ordem: warmup (0) -> moderate (1) -> fast (2) -> sprint (3)
@@ -27,20 +29,25 @@ const SPEED_BLUR_SETTINGS := {
 # Chance relativa de cada pace ser sorteado
 const random_pace_chances: Dictionary = {
 	"warmup": 10,
-	"moderate": 35,
+	"moderate": 25,
 	"fast": 35,
-	"sprint": 20
+	"sprint": 30
 }
 
 const SCORE_PADDING: float = 8.0
-var current_pace_index: int = 0
-var points_in_current_pace: int = 0
-
 var current_speed: float = -1
 var current_gap: float = -1
 var current_spacing: float = -1
 var world_speed: float = 0.0
 var speed_lerp_rate: float = 1.5
+
+const PACE_CYCLE := 39
+const pace_ban_ranges := {
+	"warmup": [6, 38],
+	"moderate": [12, 24],
+	"sprint": [0, 5]
+}
+var current_pace_index: int = 0
 
 func _ready() -> void:
 	EventBus.scored.connect(_on_scored)
@@ -50,20 +57,32 @@ func _ready() -> void:
  
 func _process(delta):
 	world_speed = lerp(world_speed, current_speed, speed_lerp_rate * delta)
+	PostFX.set_speed(clampf((world_speed - 200.0) / 200.0, 0.0, 1.0))
 
 
 func reset() -> void:
 	points_in_current_pace = 0
+	total_score = 0
 	change_pace(START_PACE_INDEX)
 	world_speed = current_speed
 
 
 func _on_scored() -> void:
 	points_in_current_pace += 1
+	total_score += 1 
+ 
+	var phase := total_score % PACE_CYCLE
+	
+	var hard_range: Array = pace_ban_ranges["moderate"]
 
+	if phase > hard_range[0] and phase <= hard_range[1]:
+		POINTS_TO_CHANGE_PACE = clampi(1 + (phase - 12) / 3, 1, 4)
+	else:
+		POINTS_TO_CHANGE_PACE = 1
+		 
 	if points_in_current_pace < POINTS_TO_CHANGE_PACE:
 		return
-
+ 
 	points_in_current_pace = 0
 	change_pace(_pick_random_pace_index())
 
@@ -77,9 +96,6 @@ func get_current_pace():
 func change_pace(new_pace_index: int) -> void:
 	current_pace_index = new_pace_index
 	_update_current_values()
- 
-	speed_lerp_rate = 0.6
-	get_tree().create_timer(1.5).timeout.connect(func(): speed_lerp_rate = 1.5)
  
 	var pace_name: String = pace_order[current_pace_index]
 	var settings: Dictionary = pace_settings[pace_name]
@@ -109,32 +125,39 @@ func _update_current_values() -> void:
 			PostFX.set_speed_streak_zone(b.streak_zone)
 			PostFX.set_speed_length(b.length)
 			PostFX.set_speed_flow(b.flow_speed)
-		PostFX.set_speed_visible(true)
-	else:
-		PostFX.set_speed_visible(false)
 		
 
 func _pick_random_pace_index() -> int:
 	var allowed_pace_indexes: Array[int] = []
 	var total_chance:int = 0
+		
+	const REPICK_UNLOCK_PHASE := 6
+	
+	var phase := total_score % PACE_CYCLE
 
 	for index in pace_order.size():
 		
-		# se o proximo pace for igual ao atual ignora o index
-		if index == current_pace_index:
+		# early game: pace sempre troca, sem repick
+		if phase < REPICK_UNLOCK_PHASE and index == current_pace_index:
 			continue
-			
+		
 		# se diferença entre o index atual e o proximo 
 		# for maior que o limite de mudança de pace ignora o index
 		if absi(index - current_pace_index) > MAX_PACE_JUMP:
 			continue
-
-		allowed_pace_indexes.append(index)
 		
 		var pace_name = pace_order[index]
+		
+		# pace banido nessa fase do ciclo? ignora o index
+		if pace_ban_ranges.has(pace_name):
+			var ban_range: Array = pace_ban_ranges[pace_name]
+			
+			if phase >= ban_range[0] and phase <= ban_range[1]:
+				continue
+	
+		allowed_pace_indexes.append(index)
 		total_chance += random_pace_chances[pace_name]
 
-	# Nenhum pace possivel: continua no atual
 	if allowed_pace_indexes.is_empty():
 		return current_pace_index
 

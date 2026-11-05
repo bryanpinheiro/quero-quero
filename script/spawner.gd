@@ -18,8 +18,6 @@ func _on_timer_timeout():
 		
 	var obstacle: Node2D = OBSTACLE.instantiate()
 	obstacle.position.y = _pick_gap_y_random_safe()
-	obstacle.speed = MechanicsManager.current_speed
-	obstacle.target_speed = MechanicsManager.current_speed
 	obstacle.gap_height = MechanicsManager.current_gap
 	add_child(obstacle)
  
